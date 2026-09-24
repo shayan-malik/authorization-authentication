@@ -33,12 +33,12 @@ function Profile() {
         };
 
         fetchProfile();
-    }, []);
+    }, [navigate]);
 
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        navigate("/login");
-    };
+    // const handleLogout = () => {
+    //     localStorage.removeItem("token");
+    //     navigate("/login");
+    // };
 
     if (error) return <p className="error-text">{error}</p>;
     if (!user) return <p>Loading...</p>;
