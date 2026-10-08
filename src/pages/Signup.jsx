@@ -1,8 +1,11 @@
 import { useState } from "react";
 import api from "../api";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
-function Signup() {
+function Signup () {
+
+    const navigate = useNavigate();
+
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
@@ -11,14 +14,13 @@ function Signup() {
     const [role, setRole] = useState("buyer");
     const [error, setError] = useState("");
 
-    const navigate = useNavigate();
-
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
 
-        try {
-            const response = await api.post("/signup", {
+        try{
+            const response = await api.post('/signup', {
                 first_name: firstName,
                 last_name: lastName,
                 email: email,
@@ -27,69 +29,56 @@ function Signup() {
                 role: role
             });
 
-            if (response.data.status === "success") {
-                alert("Signup Successfully")
-                navigate("/login");
-            } else {
-                setError(response.data.message || "Signup failed");
+            if(response.data.status === "success"){
+                navigate("/login")
             }
-        } catch (err) {
-            console.log("error", err);
-            setError("Something went wrong");
+            else{
+                setError(response.data.message || "Signup Failed");
+            }
+
+
         }
-    };
+        catch(error){
+            console.log("error", error);
+            setError("Something went wrong")
+        }
 
-    return (
-    <div className="auth-container">
-        <form onSubmit={handleSubmit}>
-            <h2>Signup</h2>
+    }
 
-            {error && <p className="error-text">{error}</p>}
 
-            <input
-                type="text"
-                placeholder="First Name"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-            />
+    return(
+        <>
+        <div className="page-wrapper">
+        <div className="auth-card">
+        <h1>Signup</h1>
+            <form onSubmit={handleSubmit}>
 
-            <input
-                type="text"
-                placeholder="Last Name"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-            />
+                {error && <p className="error-text">{error}</p>}
 
-            <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
+                <input type="text" name="firstName" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)}/>
+                <input type="text" name="lastName" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)}/>
+                <input type="email" name="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <input type="password" name="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <input type="text" name="phone" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)}/>
+                <select name="role" value={role} onChange={(e) => setRole(e.target.value)}>
+                    <option value="buyer">Buyer</option>
+                    <option value="seller">Seller</option>
+                </select>
 
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
+                <button type="submit">Signup</button>
 
-            <input
-                type="text"
-                placeholder="Phone"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-            />
+            </form>
+            
+                <p className="switch-link">
+                    Already have an account? <Link to="/login">Login</Link>
+                </p>
 
-            <select value={role} onChange={(e) => setRole(e.target.value)}>
-                <option value="buyer">Buyer</option>
-                <option value="seller">Seller</option>
-            </select>
+            </div>
+        </div>
+        </>
 
-            <button type="submit">Signup</button>
-        </form>
-    </div>
-);
+    )
+
 }
 
 export default Signup;
